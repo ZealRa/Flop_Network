@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import { useAtom } from "jotai";
-import { userAtom } from "../atoms/userAtom"; // Atome pour stocker l'utilisateur
+import { userAtom } from "../atoms/userAtom";
 
 const Signup = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [, setUser] = useAtom(userAtom); // Met à jour l'utilisateur
+  const [, setUser] = useAtom(userAtom);
 
   const handleSignup = async (e) => {
-    e.preventDefault(); // Empêche le rechargement de la page
+    e.preventDefault();
 
     const payload = {
       username,
@@ -36,12 +36,10 @@ const Signup = () => {
       const data = await response.json();
       const { jwt, user } = data;
 
-      // Stocker le token et mettre à jour l'état utilisateur
-      localStorage.setItem("jwt", jwt); // Stocker le token JWT
-      setUser(user); // Mettre à jour l'utilisateur
+      localStorage.setItem("jwt", jwt);
+      setUser(user);
 
       alert("Inscription réussie ! Bienvenue, " + user.username);
-      // Rediriger ou effectuer d'autres actions après l'inscription réussie
     } catch (error) {
       console.error(error);
       alert("Une erreur est survenue lors de l'inscription.");

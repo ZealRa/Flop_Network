@@ -1,3 +1,3 @@
-import { atom } from 'jotai';
+import { atomWithStorage } from "jotai/utils";
 
-export const userAtom = atom(null); 
+export const userAtom = atomWithStorage("user", null); // Utilisez "user" comme clé
