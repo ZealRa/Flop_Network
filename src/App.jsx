@@ -1,9 +1,10 @@
 import React, { useEffect } from "react";
 import { BrowserRouter } from "react-router-dom";
 import "./App.css";
+import Header from "./components/Header";
 import AppRoutes from "./AppRoutes";
 import { useAtom } from "jotai";
-import { userAtom } from "./atoms/userAtom"; // Atome pour stocker l'utilisateur
+import { userAtom } from "./atoms/userAtom";
 
 const App = () => {
   const [user, setUser] = useAtom(userAtom); // Récupérer et mettre à jour l'utilisateur
@@ -40,6 +41,7 @@ const App = () => {
   return (
     <div className="App">
       <BrowserRouter>
+        <Header />
         <AppRoutes />
       </BrowserRouter>
     </div>

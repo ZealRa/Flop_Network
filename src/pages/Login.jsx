@@ -40,7 +40,7 @@ const Login = () => {
       setUser(user);
 
       alert("Connexion réussie ! Bienvenue, " + user.username);
-      navigate("/"); // Redirection vers la page d'accueil
+      navigate("/");
     } catch (error) {
       console.error(error);
       alert("Une erreur est survenue lors de la connexion.");

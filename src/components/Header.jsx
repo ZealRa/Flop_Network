@@ -7,6 +7,7 @@ const Header = () => {
 
   const handleLogout = () => {
     setUser(null);
+    localStorage.removeItem("jwt");
   };
 
   return (
