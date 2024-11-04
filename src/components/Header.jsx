@@ -18,6 +18,7 @@ const Header = () => {
           <span>Bienvenue, {user.username}</span>
           <Link to="/profile">Mon Profil</Link>
           <button onClick={handleLogout}>Déconnexion</button>
+          <Link to="/">Home</Link>
         </div>
       ) : (
         <span>Veuillez vous connecter</span>

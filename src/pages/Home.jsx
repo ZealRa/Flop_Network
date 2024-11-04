@@ -9,7 +9,12 @@ const Home = () => {
   return (
     <div>
       {user ? (
-        <h1>Bienvenue, {user.username}!</h1>
+        <div>
+          <h1>Bienvenue, {user.username}!</h1>
+          <Link to="/createPost">
+            <button>Créer un post</button>
+          </Link>
+        </div>
       ) : (
         <div>
           <h1>Bienvenue sur notre réseau social !</h1>
