@@ -45,7 +45,13 @@ const CreatePost = () => {
 
       const newPost = await response.json();
 
-      setPosts((prevPosts) => [newPost, ...prevPosts]);
+      setPosts((prevPosts) => {
+        if (!Array.isArray(prevPosts)) {
+          console.error("prevPosts n'est pas un tableau", prevPosts);
+          return [newPost]; // Retourner un tableau avec le nouveau post
+        }
+        return [newPost, ...prevPosts]; // Ajouter le nouveau post
+      });
 
       navigate("/");
     } catch (error) {
