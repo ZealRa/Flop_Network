@@ -7,7 +7,7 @@ import { useAtom } from "jotai";
 import { userAtom } from "./atoms/userAtom";
 
 const App = () => {
-  const [user, setUser] = useAtom(userAtom); // Récupérer et mettre à jour l'utilisateur
+  const [user, setUser] = useAtom(userAtom);
 
   useEffect(() => {
     const token = localStorage.getItem("jwt");
