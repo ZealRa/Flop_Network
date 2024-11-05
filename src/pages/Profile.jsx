@@ -2,33 +2,53 @@ import React, { useEffect, useState } from "react";
 import { useAtom } from "jotai";
 import { userAtom } from "../atoms/userAtom";
 import { useNavigate } from "react-router-dom";
+import Post from "../components/Post"; // Assurez-vous d'importer le composant Post
 
 const Profile = () => {
-  const [user, setUser] = useAtom(userAtom);
+  const [user] = useAtom(userAtom);
   const [profileData, setProfileData] = useState(null);
+  const [userPosts, setUserPosts] = useState([]); // État pour stocker les posts de l'utilisateur
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchProfile = async () => {
+    const fetchProfileAndPosts = async () => {
       const token = localStorage.getItem("jwt");
 
       if (token) {
         try {
-          const response = await fetch("http://localhost:1337/api/users/me", {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
+          // Récupérer les données du profil
+          const profileResponse = await fetch(
+            "http://localhost:1337/api/users/me",
+            {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
 
-          if (!response.ok) {
+          if (!profileResponse.ok) {
             throw new Error(
               "Erreur lors de la récupération des données du profil"
             );
           }
 
-          const data = await response.json();
+          const data = await profileResponse.json();
           setProfileData(data);
+
+          // Récupérer les posts de l'utilisateur
+          const postsResponse = await fetch(
+            `http://localhost:1337/api/posts?filters[author][id]=${data.id}&populate=author`
+          );
+
+          if (!postsResponse.ok) {
+            throw new Error(
+              "Erreur lors de la récupération des posts de l'utilisateur"
+            );
+          }
+
+          const postsData = await postsResponse.json();
+          setUserPosts(postsData.data); // Stocker les posts dans l'état
         } catch (error) {
           console.error(error);
         }
@@ -36,7 +56,7 @@ const Profile = () => {
     };
 
     if (user) {
-      fetchProfile();
+      fetchProfileAndPosts();
     }
   }, [user]);
 
@@ -64,7 +84,15 @@ const Profile = () => {
       <button onClick={() => navigate("/editProfile")}>
         Modifier le profil
       </button>
-      {/* <p>Posts aimés : {profileData.posts_liked.length}</p> */}
+
+      <h3>Posts de {profileData.username}</h3>
+      <div>
+        {userPosts.length > 0 ? (
+          userPosts.map((post) => <Post key={post.id} post={post} />)
+        ) : (
+          <p>Aucun post disponible.</p>
+        )}
+      </div>
     </div>
   );
 };

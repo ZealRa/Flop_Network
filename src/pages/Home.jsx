@@ -3,23 +3,24 @@ import { Link } from "react-router-dom";
 import { useAtom } from "jotai";
 import { userAtom } from "../atoms/userAtom";
 import { postsAtom } from "../atoms/postsAtom";
+import Post from "../components/Post";
 
 const Home = () => {
   const [user] = useAtom(userAtom);
   const [posts, setPosts] = useAtom(postsAtom);
 
-  // Récupérer les posts lorsque le composant est monté
   useEffect(() => {
     const fetchPosts = async () => {
       try {
         const response = await fetch(
           "http://localhost:1337/api/posts?populate=author"
         );
+
         if (!response.ok) {
           throw new Error("Erreur lors de la récupération des posts");
         }
-        const data = await response.json();
 
+        const data = await response.json();
         console.log("Réponse de l'API avec auteur :", data);
 
         if (Array.isArray(data.data)) {
@@ -41,7 +42,24 @@ const Home = () => {
   return (
     <div>
       {user ? (
-        <h1>Bienvenue, {user.username}!</h1>
+        <>
+          <h1>Bienvenue, {user.username}!</h1>
+          <Link to="/createPost">
+            <button>Créer un post</button>
+          </Link>
+          <h2>Posts récents</h2>
+          <div>
+            {Array.isArray(posts) && posts.length > 0 ? (
+              posts.map((post) => (
+                <Link to={`/posts/${post.id}`} key={post.id}>
+                  <Post post={post} /> {/* Passer l'objet post directement */}
+                </Link> // Passer l'objet post directement
+              ))
+            ) : (
+              <p>Aucun post disponible.</p>
+            )}
+          </div>
+        </>
       ) : (
         <div>
           <h1>Bienvenue sur notre réseau social !</h1>
@@ -56,37 +74,6 @@ const Home = () => {
             <button>Se connecter</button>
           </Link>
         </div>
-      )}
-
-      {/* Afficher les posts */}
-      <h2>Posts récents</h2>
-      <div>
-        {Array.isArray(posts) && posts.length > 0 ? (
-          posts.map((post) => (
-            <div key={post.id}>
-              <h3>Post #{post.id}</h3>
-              <p>{post.attributes.text}</p>
-              <p>
-                Auteur :{" "}
-                {post.attributes.author?.data?.attributes?.username ||
-                  "Auteur inconnu"}
-              </p>
-              <p>
-                Créé le :{" "}
-                {new Date(post.attributes.created_at).toLocaleString()}
-              </p>
-            </div>
-          ))
-        ) : (
-          <p>Aucun post disponible.</p>
-        )}
-      </div>
-
-      {/* Lien pour créer un nouveau post */}
-      {user && (
-        <Link to="/createPost">
-          <button>Créer un post</button>
-        </Link>
       )}
     </div>
   );
