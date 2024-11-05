@@ -7,6 +7,7 @@ import Signup from "./pages/Signup";
 import EditProfile from "./pages/editProfile";
 import CreatePost from "./components/CreatePost";
 import PostDetail from "./components/PostDetail";
+import UserProfile from "./components/UserProfile";
 
 const AppRoutes = () => {
   return (
@@ -18,6 +19,7 @@ const AppRoutes = () => {
       <Route path="/editProfile" element={<EditProfile />} />
       <Route path="/createPost" element={<CreatePost />} />
       <Route path="/posts/:id" element={<PostDetail />} />
+      <Route path="/user/:user_id" element={<UserProfile />} />
     </Routes>
   );
 };

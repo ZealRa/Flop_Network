@@ -34,28 +34,33 @@ const CreatePost = () => {
         body: JSON.stringify({
           data: {
             text,
-            author: user.id,
+            author: user.id, // Vérifiez que user.id est défini
           },
         }),
       });
 
       if (!response.ok) {
-        throw new Error("Erreur lors de la création du post");
+        const errorData = await response.json();
+        throw new Error(
+          errorData.message || "Erreur lors de la création du post"
+        );
       }
 
       const newPost = await response.json();
+      const postData = newPost.data; // Accédez à la structure correcte
 
       setPosts((prevPosts) => {
         if (!Array.isArray(prevPosts)) {
           console.error("prevPosts n'est pas un tableau", prevPosts);
-          return [newPost]; // Retourner un tableau avec le nouveau post
+          return [postData]; // Retourner un tableau avec le nouveau post
         }
-        return [newPost, ...prevPosts]; // Ajouter le nouveau post
+        return [postData, ...prevPosts]; // Ajouter le nouveau post
       });
 
-      navigate("/");
+      navigate("/"); // Redirection vers la page d'accueil
     } catch (error) {
       console.error("Erreur :", error);
+      alert(error.message); // Afficher l'erreur à l'utilisateur
     }
   };
 
