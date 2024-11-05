@@ -52,8 +52,8 @@ const Home = () => {
             {Array.isArray(posts) && posts.length > 0 ? (
               posts.map((post) => (
                 <Link to={`/posts/${post.id}`} key={post.id}>
-                  <Post post={post} /> {/* Passer l'objet post directement */}
-                </Link> // Passer l'objet post directement
+                  <Post post={post} />
+                </Link>
               ))
             ) : (
               <p>Aucun post disponible.</p>

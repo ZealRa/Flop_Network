@@ -77,9 +77,9 @@ const Profile = () => {
       <p>Compte confirmé : {profileData.confirmed ? "Oui" : "Non"}</p>
       <p>Compte bloqué : {profileData.blocked ? "Oui" : "Non"}</p>
       <p>Description : {profileData.description || "Aucune description"}</p>
-      <p>Créé le : {new Date(profileData.created_at).toLocaleDateString()}</p>
+      <p>Créé le : {new Date(profileData.createdAt).toLocaleDateString()}</p>
       <p>
-        Mis à jour le : {new Date(profileData.updated_at).toLocaleDateString()}
+        Mis à jour le : {new Date(profileData.updatedAt).toLocaleDateString()}
       </p>
       <button onClick={() => navigate("/editProfile")}>
         Modifier le profil
