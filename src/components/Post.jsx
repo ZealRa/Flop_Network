@@ -2,16 +2,17 @@ import React from "react";
 import "./Post.css";
 
 const Post = ({ post }) => {
+  const { text, createdAt, author } = post.attributes;
+
   return (
     <div className="post-card">
       <h3>Post #{post.id}</h3>
-      <p>{post.attributes.text}</p>
+      <p>{text}</p>
       <p className="post-author">
-        Auteur :{" "}
-        {post.attributes.author?.data?.attributes?.username || "Auteur inconnu"}
+        Auteur : {author?.data?.attributes?.username || "Auteur inconnu"}
       </p>
       <p className="post-date">
-        Créé le : {new Date(post.attributes.createdAt).toLocaleString()}
+        Créé le : {new Date(createdAt).toLocaleString()}
       </p>
     </div>
   );

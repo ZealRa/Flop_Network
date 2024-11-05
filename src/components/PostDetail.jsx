@@ -2,67 +2,64 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 const PostDetail = () => {
-  const { id } = useParams(); // Récupère l'ID du post à partir des paramètres de l'URL
+  const { id } = useParams();
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchPost = async () => {
+      const token = localStorage.getItem("jwt");
+
       try {
         const response = await fetch(
-          `http://localhost:1337/api/posts/${id}?populate=author` // Requête pour obtenir le post avec l'auteur
+          `http://localhost:1337/api/posts/${id}?populate=author,users_likes`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
+
         if (!response.ok) {
           throw new Error("Erreur lors de la récupération du post");
         }
-        const data = await response.json();
-        console.log("Données récupérées du post :", data);
 
-        // Mise à jour pour accéder à data.data
-        setPost(data.data); // Assurez-vous d'accéder aux données du post
+        const data = await response.json();
+        setPost(data.data);
       } catch (error) {
         setError(error.message);
-        console.error(error);
       } finally {
-        setLoading(false); // Indique que le chargement est terminé
+        setLoading(false);
       }
     };
 
-    fetchPost(); // Appelle la fonction pour récupérer le post
+    fetchPost();
   }, [id]);
 
-  if (loading) {
-    return <p>Chargement du post...</p>; // Affiche un message de chargement
-  }
+  if (loading) return <p>Chargement du post...</p>;
+  if (error) return <p>{error}</p>;
+  if (!post || !post.attributes) return <p>Post non trouvé.</p>;
 
-  if (error) {
-    return <p>{error}</p>; // Affiche l'erreur si elle est survenue
-  }
-
-  // Vérification de l'existence des données du post
-  if (!post || !post.attributes) {
-    return <p>Post non trouvé.</p>; // Gère le cas où le post est introuvable
-  }
-
-  // Accéder aux données de l'auteur
-  const author = post.attributes.author?.data?.attributes?.username;
+  const { text, createdAt, updatedAt, author, users_likes } = post.attributes;
 
   return (
     <div>
       <h2>Post #{post.id}</h2>
-      <p>{post.attributes.text || "Texte indisponible"}</p>
-      <p>Auteur : {author || "Auteur inconnu"}</p>
-      <p>
-        Créé le :{" "}
-        {new Date(post.attributes.createdAt).toLocaleString() ||
-          "Date indisponible"}
-      </p>
-      <p>
-        Mis à jour le :{" "}
-        {new Date(post.attributes.updatedAt).toLocaleString() ||
-          "Date indisponible"}
-      </p>
+      <p>{text || "Texte indisponible"}</p>
+      <p>Auteur : {author?.data?.attributes?.username || "Auteur inconnu"}</p>
+      <p>Créé le : {new Date(createdAt).toLocaleString()}</p>
+      <p>Mis à jour le : {new Date(updatedAt).toLocaleString()}</p>
+      <h3>Utilisateurs ayant aimé ce post :</h3>
+      {users_likes?.data?.length > 0 ? (
+        <ul>
+          {users_likes.data.map((user) => (
+            <li key={user.id}>{user.attributes.username}</li>
+          ))}
+        </ul>
+      ) : (
+        <p>Aucun like sur ce post</p>
+      )}
     </div>
   );
 };
